@@ -1,0 +1,52 @@
+services:
+  showdown:
+    image: node:20
+    # Downloads and starts the official Pokemon Showdown server
+    command: >
+      sh -c "if [ ! -d '/showdown/.git' ]; then git clone https://github.com/smogon/pokemon-showdown.git /showdown; fi &&
+             cd /showdown &&
+             npm install &&
+             if [ ! -f config/config.js ]; then cp config/config-example.js config/config.js; fi &&
+             node pokemon-showdown start --no-security"
+
+  bot:
+    build: .
+    command: python bot.py
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - showdown
+    # Restarts if Showdown hasn't finished initializing yet
+    restart: on-failure
+
+  evo_bot:
+    build: .
+    command: python evolutionary_bot.py
+    env_file: .env
+    depends_on:
+      - showdown
+    restart: on-failure
+
+  nash_solver:
+    build: .
+    command: python nash_solver.py
+    env_file: .env
+
+  simulator_5v5:
+    build: .
+    command: python simulator_5v5.py
+    env_file: .env
+    depends_on:
+      - showdown
+    restart: on-failure
+
+  ai_predictor:
+    build: .
+    command: python ai_5v5_predictor.py
+    env_file: .env
+
+  ai_1v1_predictor:
+    build: .
+    command: python ai_1v1_predictor.py
+    env_file: .env

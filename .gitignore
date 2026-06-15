@@ -1,0 +1,18 @@
+# Fichiers d'environnement - NE JAMAIS PARTAGER
+.env
+
+# Cache et fichiers compilés de Python
+__pycache__/
+*.pyc
+
+# Fichiers de configuration des éditeurs
+.vscode/
+.idea/
+
+# Modèles de Machine Learning sauvegardés
+*.pkl
+
+# Environnements virtuels
+venv/
+env/
+*.egg-info/
